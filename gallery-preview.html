@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>噢麦嘎｜八型人格海报预览</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#202020;color:#111;font-family:Arial,"Microsoft YaHei",sans-serif}.layout{min-height:100vh;display:grid;grid-template-columns:280px minmax(320px,560px) 280px;gap:26px;justify-content:center;padding:28px}.card{background:#faf8f3;border-radius:18px;padding:18px;align-self:start}.card h2{margin:0 0 12px;font-size:20px}.card p{font-size:13px;line-height:1.6;color:#6e665c}.choices{display:grid;gap:8px}.choices button{appearance:none;border:1px solid #d9d1c5;background:#fff;border-radius:10px;padding:12px;text-align:left;font-weight:800;cursor:pointer}.choices button:hover,.choices button.active{background:#ffbc0d;border:2px solid #111;box-shadow:3px 3px #111}.stage{display:grid;place-items:start center}.poster{width:min(100%,520px);aspect-ratio:3/4;background:#f5f0e7;border:2px solid #111;box-shadow:12px 14px #000;overflow:hidden}.poster img{width:100%;height:100%;display:block;object-fit:cover}.meta{font-size:13px;line-height:1.7}.meta strong{color:#db0007}.tip{margin-top:16px;padding:12px;background:#eee8dd;border-radius:10px;font-size:12px;line-height:1.6}@media(max-width:900px){.layout{grid-template-columns:1fr;max-width:560px;margin:auto}.stage{order:-1}.card{width:100%}}
+</style>
+<body><main class="layout"><aside class="card"><h2>人格选择</h2><p>请直接点击左侧按钮，不需要拖拽。点击后，中间会切换对应的完整海报。</p><div class="choices" id="choices"></div></aside><section class="stage"><div class="poster"><img id="poster" alt="当前人格完整海报"></div></section><aside class="card meta"><h2 id="title">班马 · 麦门打卡型</h2><p id="copy">一个人，活成了一个班。<br>白天上班，晚上上麦。</p><div class="tip"><strong>操作方式</strong><br>点击左侧任意人格按钮即可切换。<br><br>八张海报已经全部接入，当前先做视觉预览；MCP 订单数据接入后再替换数据卡。</div></aside></main>
+<script>
+const profiles=[
+ ['banma','班马 · 麦门打卡型','一个人，活成了一个班。','assets/persona-banma.jpg'],
+ ['midnight','深夜黑马 · 续命型','别人结束一天，你开始给自己加餐。','assets/persona-midnight.jpg'],
+ ['dessert','甜筒治愈派 · 情绪补给型','今天的情绪，先交给一支甜筒。','assets/persona-dessert.jpg'],
+ ['rush','卡急马 · 下班冲刺型','下班铃一响，麦门准时开场。','assets/persona-rush.jpg'],
+ ['classic','麦门痴心人 · 经典守护型','本命不需要解释，经典自有回响。','assets/persona-classic.jpg'],
+ ['explorer','麦门探险家 · 尝鲜型','新品上架，就是你的出发信号。','assets/persona-explorer.jpg'],
+ ['delivery','麦乐送常驻民 · 到家型','不出门，也能准时抵达麦门。','assets/persona-delivery.jpg'],
+ ['spotlight','麦门显眼包 · 高光型','每一单都值得登上今日高光。','assets/persona-spotlight.jpg']
+];
+const choices=document.getElementById('choices'),poster=document.getElementById('poster'),title=document.getElementById('title'),copy=document.getElementById('copy');
+profiles.forEach((p,i)=>{const b=document.createElement('button');b.textContent=p[1];b.onclick=()=>select(i);choices.appendChild(b)});
+function select(i){const p=profiles[i];document.querySelectorAll('.choices button').forEach((b,j)=>b.classList.toggle('active',i===j));poster.src=p[3];title.textContent=p[1];copy.innerHTML=p[2];}
+select(0);
+</script></body></html>

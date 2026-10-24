@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="1200" viewBox="0 0 900 1200">
+<rect width="900" height="1200" fill="#f4f0e8"/>
+<image x="58" y="43" width="82" height="72" xlink:href="assets/mcdonalds-arches.png"/>
+<text x="54" y="148" font-family="Microsoft YaHei,Arial,sans-serif" font-size="34" font-weight="900" fill="#111">噢<tspan fill="#db0007">麦</tspan>嘎</text>
+<text x="742" y="82" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" font-weight="900" fill="#111">2026</text>
+<line x1="742" y1="93" x2="837" y2="93" stroke="#db0007" stroke-width="4"/>
+<text x="450" y="267" text-anchor="middle" font-family="Microsoft YaHei,Arial,sans-serif" font-size="94" font-weight="900" letter-spacing="-5" fill="#111">你的劳饭</text>
+<text x="450" y="368" text-anchor="middle" font-family="Microsoft YaHei,Arial,sans-serif" font-size="94" font-weight="900" letter-spacing="-5" fill="#db0007">年度报告</text>
+<rect x="226" y="416" width="464" height="84" rx="42" fill="#111"/>
+<rect x="218" y="408" width="464" height="84" rx="42" fill="#ffbc0d" stroke="#111" stroke-width="6"/>
+<text x="450" y="462" text-anchor="middle" font-family="Microsoft YaHei,Arial,sans-serif" font-size="34" font-weight="900" fill="#111">深夜黑马 · 续命型</text>
+<ellipse cx="450" cy="719" rx="205" ry="205" fill="#fad567"/>
+<path d="M204 562L172 531M692 555L726 520M188 818L153 840M696 831L736 855" stroke="#db0007" stroke-width="10"/>
+<path d="M240 524V495M661 602L693 593M219 743H187M664 740H694" stroke="#111" stroke-width="5"/>
+<image x="145" y="505" width="610" height="480" preserveAspectRatio="xMidYMid meet" xlink:href="assets/Photorealistic_premium_fast_fo_2026-10-24T04-29-42.png" style="mix-blend-mode:multiply"/>
+<text x="450" y="975" text-anchor="middle" font-family="Microsoft YaHei,Arial,sans-serif" font-size="25" fill="#111">别人结束一天，你开始给自己加餐。</text>
+<line x1="58" y1="1010" x2="842" y2="1010" stroke="#111" stroke-width="3"/>
+<text x="75" y="1063" font-family="Microsoft YaHei,Arial,sans-serif" font-size="24" font-weight="700" fill="#111">22:00 后下单</text>
+<text x="273" y="1064" font-family="Microsoft YaHei,Arial,sans-serif" font-size="38" font-weight="900" fill="#db0007">18 单</text>
+<line x1="450" y1="1028" x2="450" y2="1090" stroke="#111" stroke-width="2"/>
+<text x="481" y="1063" font-family="Microsoft YaHei,Arial,sans-serif" font-size="24" font-weight="700" fill="#111">最晚一单</text>
+<text x="596" y="1062" font-family="Microsoft YaHei,Arial,sans-serif" font-size="27" font-weight="900" fill="#db0007">凌晨 01:23 AM</text>
+<line x1="58" y1="1110" x2="842" y2="1110" stroke="#111" stroke-width="3"/>
+<text x="58" y="1155" font-family="Microsoft YaHei,Arial,sans-serif" font-size="18" font-weight="700" fill="#db0007">#噢麦嘎  #劳饭年度报告</text>
+<text x="645" y="1154" font-family="Microsoft YaHei,Arial,sans-serif" font-size="15" fill="#555">演示样本 · 非官方</text>
+</svg>
