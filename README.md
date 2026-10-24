@@ -232,8 +232,10 @@ mcd-laofan-report/
 
 ## 致谢
 
-- 麦当劳 MCP 团队，提供了 `order-list` 和 `now-time-info` 只读工具
-- Seedream，生成了八张人格海报底图（Prompt 见 `传播手册.md`）
+- **麦当劳 MCP 团队**，提供了 `order-list` 和 `now-time-info` 只读工具
+- **Anthropic Claude**（Kiro），完成了从产品设计到代码实现的全流程开发
+- **WorkBuddy**，前期需求梳理、技术选型和架构设计阶段提供了大量协助
+- **Seedream**，生成了八张人格海报底图，统一版式和配色方案（Prompt 见 `传播手册.md`）
 - 参赛小伙伴们，2026 年继续麦
 
 ---
