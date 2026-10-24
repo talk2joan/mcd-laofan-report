@@ -16,10 +16,11 @@
 
 ## 关键实现文件
 
-- `report.html`：订单分析页面；
-- `gallery-preview-standalone.html`：自包含八型海报预览；
+- `index.html`：单页应用（人格切换、读取订单、导出海报）；
 - `app.js`：订单解析、统计、人格判定；
-- `mcp_bridge.py`：本地 MCP 只读桥接；
+- `poster.js`：Canvas 把真实数据画到海报卡片上；
+- `mcp_bridge.py`：本地 MCP 只读桥接（本机来源白名单 + 字段白名单）；
+- `mcd_client.py`：零依赖 MCP Streamable HTTP 客户端；
 - `assets/persona-*.jpg`：八张人格海报。
 
 ## 当前限制

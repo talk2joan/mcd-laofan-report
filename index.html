@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>噢麦嘎｜2026 劳饭年度报告</title>
+<meta name="description" content="读取你的麦当劳订单（麦当劳 MCP order-list），生成专属麦门人格与 3:4 年度海报。">
+<meta property="og:title" content="噢麦嘎｜2026 劳饭年度报告">
+<meta property="og:description" content="你是班马、深夜黑马，还是麦乐送常驻民？用订单测出你的麦门人格。">
+<meta property="og:image" content="assets/persona-banma.jpg">
+<style>
+:root{--red:#db0007;--yellow:#ffbc0d;--paper:#f5f0e7;--card:#fbf8f2;--ink:#151515;--muted:#6e665c;--line:#ddd3c4}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;line-height:1.6}
+a{color:var(--red)}
+button,label.btn{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px;letter-spacing:-.04em}
+.brand img{width:30px;height:auto}
+.brand i{font-style:normal;color:var(--red)}
+.top nav a{color:var(--ink);font-weight:700;text-decoration:none;margin-left:18px;font-size:14px}
+.hero{padding:10px 0 26px}
+.hero h1{font-size:clamp(34px,6vw,64px);line-height:1.02;margin:0;letter-spacing:-.04em;font-weight:950}
+.hero h1 span{color:var(--red)}
+.hero p{max-width:640px;color:var(--muted);font-size:16px;margin:14px 0 0}
+.app{display:grid;grid-template-columns:minmax(300px,480px) 1fr;gap:32px;align-items:start;padding-bottom:40px}
+.stage{position:sticky;top:16px}
+.poster{position:relative;aspect-ratio:3/4;background:#ece5d8;border:2px solid var(--ink);box-shadow:10px 12px 0 var(--ink);overflow:hidden}
+.poster canvas{width:100%;height:100%;display:block}
+.poster .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-weight:700}
+.actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:10px 18px;font-weight:800;font-size:15px;text-decoration:none}
+.btn.primary{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.btn.red{background:var(--red);color:#fff;box-shadow:3px 3px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;margin-bottom:18px}
+.panel h2{margin:0 0 4px;font-size:18px}
+.panel .sub{margin:0 0 14px;color:var(--muted);font-size:13px}
+.source{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.source .btn{border-radius:12px;flex-direction:column;padding:12px 8px;font-size:14px;line-height:1.3;text-align:center}
+.source .btn small{font-weight:500;color:var(--muted);font-size:12px}
+.status{margin-top:14px;padding:10px 12px;border-radius:10px;background:#efe8dc;font-size:13px}
+.status b{color:var(--red)}
+.status.ok{background:#e8f3e1}
+.status.err{background:#fde7e5}
+.result-name{font-size:30px;font-weight:950;letter-spacing:-.03em;margin:0}
+.result-name span{color:var(--red)}
+.result-line{margin:6px 0 0;font-weight:700}
+.reason{display:inline-block;margin-top:10px;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;padding:3px 12px;font-size:13px;font-weight:800}
+.bars{display:grid;gap:7px;margin-top:6px}
+.bar{display:grid;grid-template-columns:112px 1fr 34px;gap:10px;align-items:center;font-size:13px}
+.bar .track{height:10px;border-radius:99px;background:#e8e0d2;overflow:hidden}
+.bar .fill{height:100%;background:var(--ink);border-radius:99px;transition:width .5s}
+.bar.win{font-weight:900}
+.bar.win .fill{background:var(--red)}
+.bar .num{text-align:right;font-variant-numeric:tabular-nums}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.kpi b{display:block;font-size:22px;color:var(--red);font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi span{font-size:12px;color:var(--muted)}
+.personas{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.personas button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:6px;text-align:center;font-size:12px;font-weight:800;color:var(--ink)}
+.personas button img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px;display:block;margin-bottom:4px}
+.personas button[aria-pressed="true"]{border:2px solid var(--ink);background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.share{width:100%;min-height:70px;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:13px;background:#fff;resize:vertical}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:10px 0 40px}
+.how div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.how b{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--red);color:#fff;font-size:14px;margin-bottom:6px}
+.how p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:12px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:860px){.app{grid-template-columns:1fr}.stage{position:static}.how{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.top nav{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img src="assets/mcdonalds-arches.png" alt="" width="30" height="26"><span>噢<i>麦</i>嘎</span></div>
+    <nav aria-label="页面导航"><a href="#app">生成报告</a><a href="#how">工作原理</a><a href="https://github.com/talk2joan/mcd-laofan-report">GitHub</a></nav>
+  </header>
+
+  <section class="hero">
+    <h1>你的 2026<br><span>劳饭年度报告</span></h1>
+    <p>读取你在麦当劳的到店 / 外送订单，从时间、渠道、单品和金额里算出你的「麦门人格」，生成一张能直接发朋友圈的 3:4 年度海报。</p>
+  </section>
+
+  <main class="app" id="app">
+    <section class="stage" aria-label="年度海报">
+      <div class="poster">
+        <canvas id="poster" role="img" aria-label="年度海报"></canvas>
+        <div class="loading" id="poster-loading">海报生成中…</div>
+      </div>
+      <div class="actions">
+        <button class="btn red" id="download" type="button">下载海报 PNG</button>
+        <button class="btn" id="copy" type="button">复制分享文案</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>1. 选择数据来源</h2>
+        <p class="sub">真实订单通过麦当劳 MCP 的 <code>order-list</code> 读取；Token 只留在你本机的桥接进程里。</p>
+        <div class="source">
+          <button class="btn primary" id="load-mcp" type="button">读取我的订单<small>麦当劳 MCP</small></button>
+          <label class="btn" for="order-file">导入订单 JSON<small>order-list 原始返回</small></label>
+          <button class="btn" id="load-demo" type="button">看演示<small>八种人格样本</small></button>
+        </div>
+        <input id="order-file" class="sr-only" type="file" accept=".json,application/json">
+        <div class="status" id="status" role="status" aria-live="polite">当前：<b>演示样本</b>。点击「读取我的订单」生成你的真实报告。</div>
+      </div>
+
+      <div class="panel" aria-live="polite">
+        <h2>2. 你的麦门人格</h2>
+        <p class="result-name" id="result-name">—</p>
+        <p class="result-line" id="result-line"></p>
+        <span class="reason" id="result-reason"></span>
+        <div class="kpis" id="kpis" style="margin-top:16px"></div>
+      </div>
+
+      <div class="panel">
+        <h2>3. 八型人格得分</h2>
+        <p class="sub">每种人格按订单行为独立打分（0–100），得分最高者胜出。</p>
+        <div class="bars" id="bars"></div>
+      </div>
+
+      <div class="panel">
+        <h2>演示：看看其他人格</h2>
+        <p class="sub">用对应行为生成的演示订单跑一遍完整算法（海报会标注「演示样本」）。</p>
+        <div class="personas" id="personas"></div>
+      </div>
+
+      <div class="panel">
+        <h2>分享文案</h2>
+        <label class="sr-only" for="share">分享文案</label>
+        <textarea class="share" id="share" readonly></textarea>
+      </div>
+    </section>
+  </main>
+
+  <section id="how" aria-labelledby="how-title">
+    <h2 id="how-title">工作原理</h2>
+    <div class="how">
+      <div><b>1</b><strong>读订单</strong><p>本地桥接用你的 Token 调用麦当劳 MCP <code>order-list</code> 与 <code>now-time-info</code>。</p></div>
+      <div><b>2</b><strong>脱敏</strong><p>只保留下单时间、渠道、金额、商品名；不含订单号、门店、地址、手机号。</p></div>
+      <div><b>3</b><strong>算人格</strong><p>在浏览器里统计 20+ 项指标，为八种人格打分，全程不上传任何服务器。</p></div>
+      <div><b>4</b><strong>出海报</strong><p>把你的真实数字画进人格海报，一键下载 PNG 并复制分享文案。</p></div>
+    </div>
+  </section>
+
+  <footer>
+    独立参赛作品，非麦当劳官方产品。报告仅供娱乐，餐品信息与订单以麦当劳官方渠道为准。演示数据均已在海报与页面上标注。
+  </footer>
+</div>
+
+<script src="app.js"></script>
+<script src="poster.js"></script>
+<script>
+(function () {
+  "use strict";
+  const R = window.MCDReport, P = window.MCDPoster;
+  const $ = (s) => document.querySelector(s);
+  const canvas = $("#poster"), statusEl = $("#status");
+  const LABELS = { banma: "班马", midnight: "深夜黑马", dessert: "甜品治愈派", rush: "卡急马", classic: "麦门痴心人", explorer: "麦门探险家", delivery: "麦乐送常驻民", spotlight: "麦门显眼包" };
+  // 由 mcp_bridge.py 提供页面时同源调用；静态托管（GitHub Pages）或 file:// 时尝试本机桥接
+  const servedByBridge = /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && location.port === "8765";
+  const BRIDGE = servedByBridge ? "" : "http://127.0.0.1:8765";
+  let report = null;
+
+  function setStatus(html, kind) {
+    statusEl.className = "status" + (kind ? " " + kind : "");
+    statusEl.innerHTML = html;
+  }
+  function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+
+  async function render(next) {
+    report = next;
+    const key = report.persona.key, p = R.PERSONAS[key], s = report.stats;
+    $("#result-name").innerHTML = `${esc(p.name)} · <span>${esc(p.type)}</span>`;
+    $("#result-line").textContent = `${p.title}${p.subtitle}`;
+    $("#result-reason").textContent = (report.usingDemo ? "演示样本｜" : "") + report.persona.reason;
+    const kpis = [[s.total, "订单数"], [`¥${s.totalAmount}`, "累计实付"], [s.peakTime || "—", "最常下单时刻"], [s.favoriteItem || "—", "出现最多的单品"]];
+    $("#kpis").innerHTML = kpis.map(([v, l]) => `<div class="kpi"><b>${esc(v)}</b><span>${l}</span></div>`).join("");
+    $("#bars").innerHTML = R.PERSONA_ORDER
+      .map((k) => [k, report.persona.scores[k]]).sort((a, b) => b[1] - a[1])
+      .map(([k, v]) => `<div class="bar${k === key ? " win" : ""}"><span>${LABELS[k]}</span><span class="track"><span class="fill" style="width:${v}%"></span></span><span class="num">${v}</span></div>`).join("");
+    document.querySelectorAll("#personas button").forEach((b) => b.setAttribute("aria-pressed", String(report.usingDemo && b.dataset.key === report.demoKey)));
+    $("#share").value = R.shareText(report);
+    canvas.setAttribute("aria-label", `年度海报：${p.name}·${p.type}，${report.cards.map((c) => c.join("")).join("，")}`);
+    const loading = $("#poster-loading");
+    loading.hidden = false;
+    try {
+      await P.renderPoster(canvas, { image: p.image, cards: report.cards, demo: report.usingDemo });
+      loading.hidden = true;
+    } catch (e) {
+      loading.hidden = true;
+      setStatus(esc(e.message), "err");
+    }
+  }
+
+  function showDemo(key) {
+    render(R.prepareReport(null, { demoPersona: key }));
+    setStatus(`当前：<b>演示样本（${LABELS[key]}）</b>。数字来自按该人格行为生成的演示订单。`);
+  }
+
+  // 人格缩略图
+  $("#personas").innerHTML = R.PERSONA_ORDER.map((k) => `<button type="button" data-key="${k}" aria-pressed="false"><img src="${R.PERSONAS[k].image}" alt="" loading="lazy">${LABELS[k]}</button>`).join("");
+  $("#personas").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) showDemo(b.dataset.key); });
+  $("#load-demo").addEventListener("click", () => showDemo(report && report.usingDemo ? R.PERSONA_ORDER[(R.PERSONA_ORDER.indexOf(report.demoKey) + 1) % 8] : "banma"));
+
+  $("#load-mcp").addEventListener("click", async () => {
+    setStatus("正在通过麦当劳 MCP 读取订单…");
+    let res, data;
+    try {
+      res = await fetch(`${BRIDGE}/api/report`, { cache: "no-store" });
+      data = await res.json();
+    } catch (_) {
+      setStatus('没有连上本地桥接。请在终端运行 <code>python mcp_bridge.py</code>（先设置 <code>MCD_MCP_TOKEN</code>），然后打开 <a href="http://127.0.0.1:8765/">http://127.0.0.1:8765/</a>。<a href="https://github.com/talk2joan/mcd-laofan-report#快速开始">查看步骤</a>', "err");
+      return;
+    }
+    if (!res.ok || !data.ok) { setStatus(`读取失败：${esc(data.error || "HTTP " + res.status)}`, "err"); return; }
+    if (data.isDemo) {
+      showDemo("banma");
+      setStatus("MCP 调用成功，但 <code>order-list</code> 没有返回订单（新账号或近期无订单）。已切换为<b>演示样本</b>，不会把演示数字当成你的数据。", "err");
+      return;
+    }
+    await render(R.prepareReport(data));
+    setStatus(`已读取 <b>${report.stats.total} 笔真实订单</b>（${esc(report.stats.firstDate)} ~ ${esc(report.stats.lastDate)}，来源：麦当劳 MCP ${data.tools.map(esc).join(" + ")}）。`, "ok");
+  });
+
+  $("#order-file").addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const next = R.prepareReport(JSON.parse(await file.text()));
+      if (next.usingDemo) { setStatus("文件里没有识别到订单，请导入 order-list 的返回内容。", "err"); return; }
+      await render(next);
+      setStatus(`已导入 <b>${next.stats.total} 笔订单</b>（${esc(file.name)}），全部在浏览器本地计算。`, "ok");
+    } catch (_) {
+      setStatus("JSON 解析失败，请检查文件格式。", "err");
+    } finally { e.target.value = ""; }
+  });
+
+  $("#download").addEventListener("click", () => {
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) throw new Error("empty");
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `噢麦嘎-劳饭年度报告-${R.PERSONAS[report.persona.key].name}${report.usingDemo ? "-演示" : ""}.png`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      }, "image/png");
+    } catch (_) {
+      setStatus("当前打开方式不支持导出（file:// 下浏览器会拦截）。请通过 http://127.0.0.1:8765/ 或在线版打开。", "err");
+    }
+  });
+
+  $("#copy").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText($("#share").value); $("#copy").textContent = "已复制 ✓"; }
+    catch (_) { $("#share").select(); document.execCommand("copy"); $("#copy").textContent = "已复制 ✓"; }
+    setTimeout(() => { $("#copy").textContent = "复制分享文案"; }, 1600);
+  });
+
+  showDemo("banma");
+  // 桥接在线时提示用户
+  fetch(`${BRIDGE}/health`, { cache: "no-store" }).then((r) => r.json()).then((h) => {
+    if (h.tokenConfigured) setStatus("检测到本地 MCP 桥接已就绪，点击<b>「读取我的订单」</b>生成你的真实报告。", "ok");
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>
