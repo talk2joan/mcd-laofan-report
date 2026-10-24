@@ -58,3 +58,13 @@ test("外送占比高的真实订单判定为麦乐送常驻民", () => {
 test("分享文案对演示数据做标注", () => {
   assert.match(R.shareText(R.prepareReport(null, { demoPersona: "dessert" })), /演示样本/);
 });
+
+test("三渠道分享文案：带人格、证据与演示标注", () => {
+  const demo = R.shareTexts(R.prepareReport(null, { demoPersona: "midnight" }));
+  for (const ch of ["moments", "xhs", "group"]) {
+    assert.match(demo[ch], /深夜黑马/);
+    assert.match(demo[ch], /演示样本/);
+  }
+  assert.match(demo.group, /最晚一单/);
+  assert.equal(R.shareText(R.prepareReport(null, { demoPersona: "midnight" })), demo.moments);
+});

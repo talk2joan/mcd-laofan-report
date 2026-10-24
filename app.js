@@ -334,14 +334,28 @@
   }
 
   function shareText(report) {
+    return shareTexts(report).moments;
+  }
+
+  // 三种渠道的分享文案（口径来自《传播手册》5.1）：朋友圈 / 小红书 / 群聊报数
+  function shareTexts(report) {
     const p = PERSONAS[report.persona.key];
     const tag = report.usingDemo ? "（演示样本）" : "";
-    return `噢麦嘎！我的 2026 劳饭年度报告出炉了${tag}：我是「${p.name}·${p.type}」。${p.title} 共下单 ${report.stats.total} 单，${report.persona.reason}。#噢麦嘎 #劳饭年度报告`;
+    const who = `「${p.name}·${p.type}」`;
+    const evidence = report.cards
+      .filter(([label]) => label !== "共下单")
+      .map(([label, value, unit]) => `${label} ${value}${unit}`)
+      .join("，");
+    return {
+      moments: `噢麦嘎，我的 2026 劳饭年度报告出来了${tag}：正式确诊为${who}。${p.title}${p.subtitle} #噢麦嘎 #劳饭年度报告`,
+      xhs: `原来我不是爱吃麦，我是${who}麦门人${tag}。${evidence}，被数据抓得死死的。你是哪一型？评论区报出你的麦门型号 #噢麦嘎 #劳饭年度报告 #麦门`,
+      group: `报数${tag}：我今年点了 ${report.stats.total} 单，${evidence}，正式确诊${who}。你们呢？`
+    };
   }
 
   return {
     PERSONAS, PERSONA_ORDER, DEMO_PROFILES,
     buildDemoOrders, parseJsonText, unwrapMcpPayload, extractOrderRows, normalizeOrders, parseTime,
-    summarize, scorePersonas, determinePersona, posterCards, prepareReport, shareText
+    summarize, scorePersonas, determinePersona, posterCards, prepareReport, shareText, shareTexts
   };
 });

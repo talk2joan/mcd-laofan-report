@@ -6,7 +6,7 @@
 - 只调用只读工具：order-list（历史订单）、now-time-info（报告生成时间）；
 - 向浏览器只返回 createTime / orderType / realTotalAmount / 商品名与数量，
   不返回 orderId、门店、地址、手机号等字段；
-- 只监听 127.0.0.1，CORS 只放行本机来源，其他网站无法读取你的订单。
+- 只监听 127.0.0.1，CORS 只放行本机页面和本项目在线版，其他网站无法读取你的订单。
 """
 from __future__ import annotations
 
@@ -25,8 +25,15 @@ from mcd_client import AuthError, MCDClient, MCPError  # noqa: E402
 
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("MCD_BRIDGE_PORT", "8765"))
-# 只允许本机页面跨域访问（file:// 打开时 Origin 为 "null"）
-ALLOWED_ORIGIN = re.compile(r"^(null|https?://(127\.0\.0\.1|localhost)(:\d+)?)$")
+# 允许跨域读取的来源：本机页面（file:// 打开时 Origin 为 "null"）+ 本项目的 GitHub Pages 在线版。
+# 在线版运行在你的浏览器里，请求的是你本机的 127.0.0.1，Token 和订单都不经过 GitHub。
+# 自己 fork 部署时，用 MCD_BRIDGE_ORIGINS 追加来源（逗号分隔，完整 https://域名）。
+_EXTRA_ORIGINS = [o.strip().rstrip("/") for o in os.environ.get("MCD_BRIDGE_ORIGINS", "").split(",") if o.strip()]
+ALLOWED_ORIGIN = re.compile(
+    r"^(null|https?://(127\.0\.0\.1|localhost)(:\d+)?|https://talk2joan\.github\.io"
+    + "".join("|" + re.escape(o) for o in _EXTRA_ORIGINS)
+    + r")$"
+)
 STATIC_FILES = {"/": "index.html", "/index.html": "index.html", "/app.js": "app.js", "/poster.js": "poster.js"}
 ORDER_LIST_KEYS = ("orders", "orderList", "list", "records", "items", "rows")
 
@@ -110,6 +117,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Vary", "Origin")
             self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
             self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            # Chrome 私有网络访问（https 公网页面 → 127.0.0.1）需要显式同意
+            if self.headers.get("Access-Control-Request-Private-Network") == "true":
+                self.send_header("Access-Control-Allow-Private-Network", "true")
 
     def _send(self, status: int, body: bytes, ctype: str):
         self.send_response(status)
@@ -124,6 +134,10 @@ class Handler(BaseHTTPRequestHandler):
         self._send(status, json.dumps(payload, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
 
     def do_OPTIONS(self):
+        origin = self.headers.get("Origin")
+        if origin and not ALLOWED_ORIGIN.match(origin):
+            self._json(403, {"ok": False, "error": "来源不在白名单"})
+            return
         self.send_response(204)
         self._cors()
         self.end_headers()
@@ -132,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         origin = self.headers.get("Origin")
         if origin and not ALLOWED_ORIGIN.match(origin):
-            self._json(403, {"ok": False, "error": "只允许本机页面访问"})
+            self._json(403, {"ok": False, "error": "来源不在白名单"})
             return
         if path == "/health":
             self._json(200, {"ok": True, "service": "mcd-laofan-mcp-bridge", "tokenConfigured": bool(os.environ.get("MCD_MCP_TOKEN"))})
