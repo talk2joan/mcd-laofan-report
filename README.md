@@ -1,10 +1,33 @@
-# 噢麦嘎｜2026 劳饭年度报告
+# 🍟 噢麦嘎｜2026 劳饭年度报告
 
 > **今年的你，正式确诊为哪一型麦门人？**
 >
 > 读取你的麦当劳订单，从时间、渠道、单品、金额里算出你的麦门人格，生成一张能直接发朋友圈的 3:4 年度海报。
 
-![hero](assets/persona-midnight.jpg)
+<p align="center">
+  <a href="https://talk2joan.github.io/mcd-laofan-report/"><img src="https://img.shields.io/badge/🎮_在线试玩-Demo模式免Token-FFC72C?style=for-the-badge&logo=mcdonalds&logoColor=white" alt="在线试玩"/></a>
+  <a href="https://github.com/talk2joan/mcd-laofan-report/stargazers"><img src="https://img.shields.io/github/stars/talk2joan/mcd-laofan-report?style=for-the-badge&color=FFC72C&logo=github" alt="GitHub stars"/></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-00784A?style=for-the-badge" alt="MIT license"/></a>
+</p>
+
+<p align="center">
+  <b>3 秒试玩</b>：打开在线版 → 点「八型图鉴」任意一张海报 → 立刻看到你的人格报告（演示数据）。
+</p>
+
+### 🎨 麦门八型人格海报样张
+
+<p align="center">
+  <img src="assets/persona-banma.jpg" width="180" alt="班马"/>
+  <img src="assets/persona-midnight.jpg" width="180" alt="深夜黑马"/>
+  <img src="assets/persona-dessert.jpg" width="180" alt="甜品治愈派"/>
+  <img src="assets/persona-rush.jpg" width="180" alt="卡急马"/>
+</p>
+<p align="center">
+  <img src="assets/persona-classic.jpg" width="180" alt="麦门痴心人"/>
+  <img src="assets/persona-explorer.jpg" width="180" alt="麦门探险家"/>
+  <img src="assets/persona-delivery.jpg" width="180" alt="麦乐送常驻民"/>
+  <img src="assets/persona-spotlight.jpg" width="180" alt="麦门显眼包"/>
+</p>
 
 **在线体验**：[talk2joan.github.io/mcd-laofan-report](https://talk2joan.github.io/mcd-laofan-report/)  
 **参赛赛道**：麦当劳程序员创意开发大赛 · 麦当劳 MCP 只读开发
@@ -13,7 +36,7 @@
 
 ## 你会得到什么
 
-- **一张年度海报**（3:4 竖版，PNG），底部三张卡是你的真实数字，配色和排版都做过了，保存直接发
+- **一张年度海报**（3:4 竖版，PNG），底部三张卡是你的真实数字，配色和排版都做过了，保存直接发朋友圈
 - **麦门八型人格鉴定**：班马、深夜黑马、甜品治愈派、卡急马、麦门痴心人、麦门探险家、麦乐送常驻民、麦门显眼包
 - **20+ 项订单指标**：下单总数、工作日占比、深夜下单、本命单品、探索度、高光时刻……
 - **三种分享文案**：朋友圈 / 小红书 / 群聊报数，复制就能发
@@ -27,9 +50,19 @@
 
 ---
 
-## 三种使用方式
+## 怎么玩（3 种方式，按门槛从低到高）
 
-### 方式一：本机桥接（推荐，真实订单）
+### 🎮 方式零：演示模式（推荐先点这个，免 Token）
+
+没有 Token 也能 10 秒看到完整效果：
+
+1. 打开 [在线版](https://talk2joan.github.io/mcd-laofan-report/)
+2. 滑到「八型图鉴」，点任意一张人格海报
+3. 用该人格的演示订单跑一遍完整算法，海报和页面会标注「演示样本」
+
+**看完觉得有意思再 Star，想要自己的报告再往下走。**
+
+### 🛰️ 方式一：在线版 + 本机桥接（看自己的真实订单）
 
 1. 在 [open.mcd.cn/mcp](https://open.mcd.cn/mcp) 用手机号登录，申请 MCP Token
 2. 下载本项目，在项目目录启动本机桥接（只需要 Python 3.8+，零依赖）：
@@ -46,6 +79,8 @@ python mcp_bridge.py
 
 3. 浏览器打开 [http://127.0.0.1:8765/](http://127.0.0.1:8765/)，点「读取我的订单」
 
+也可以直接打开 [talk2joan.github.io/mcd-laofan-report](https://talk2joan.github.io/mcd-laofan-report/)，它会请求你本机的 `127.0.0.1:8765`（需要先启动桥接）。Token 和订单都不经过 GitHub，全程留在本地。
+
 **桥接做了什么**：
 
 - 调用麦当劳 MCP 的 `order-list`（历史订单）和 `now-time-info`（报告时间）
@@ -54,21 +89,9 @@ python mcp_bridge.py
 - 只监听 `127.0.0.1`，CORS 只放行本机页面和本项目 GitHub Pages，其他网站无法读取你的订单
 - Token 只从环境变量读取，只在本进程内使用，从不发给浏览器、不落盘
 
-### 方式二：在线版（真实订单，需要本机桥接配合）
-
-直接打开 [talk2joan.github.io/mcd-laofan-report](https://talk2joan.github.io/mcd-laofan-report/)。
-
-- 在线页面运行在你的浏览器里，请求的是你本机的 `127.0.0.1:8765`（需要先按方式一启动桥接）
-- Token 和订单都不经过 GitHub，全程留在本地
-- 桥接的白名单里已经放行了 `talk2joan.github.io`，支持 Chrome 私有网络访问（https 公网页面 → 127.0.0.1）
-
-### 方式三：导入 JSON（离线验证）
+### 📦 方式二：导入 JSON（离线验证）
 
 如果你已经通过其他方式拿到了 `order-list` 的原始返回（JSON 格式），可以在页面上点「导入订单 JSON」直接上传，全部在浏览器本地计算。
-
-### 演示模式
-
-没有 Token 也能先玩：点页面下方「八型图鉴」里任意一张海报，用该人格的演示订单跑一遍完整算法。海报和页面上会标注「演示样本」。
 
 ---
 
